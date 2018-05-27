@@ -17,7 +17,7 @@ t_chain*create_chain(void (*free)(t_chain**))
   return (chain);
 }
 
-voidinit_chain(t_chain **chain, t_link **link)
+void init_chain(t_chain **chain, t_link **link)
 {
   (*chain)->first = (*link);
   (*chain)->last = (*link);
@@ -25,7 +25,7 @@ voidinit_chain(t_chain **chain, t_link **link)
   (*link)->prev = NULL;
 }
 
-intadd_link(t_chain **chain, void *content)
+int add_link(t_chain **chain, void *content)
 {
   t_link*link;
 
@@ -52,7 +52,7 @@ intadd_link(t_chain **chain, void *content)
   return (0);
 }
 
-intremove_link(t_chain **chain, t_link *link)
+int remove_link(t_chain **chain, t_link *link)
 {
   if (link == (*chain)->first && link == (*chain)->last)
     {
@@ -89,7 +89,7 @@ intremove_link(t_chain **chain, t_link *link)
   return (0);
 }
 
-intdelete_chain(t_chain **chain)
+int delete_chain(t_chain **chain)
 {
   if ((*chain)->free != NULL)
     (*chain)->free(chain);
@@ -111,7 +111,7 @@ intchain_is_null(t_chain **chain)
   return (0);
 }
 
-intchain_is_empty(t_chain **chain)
+int chain_is_empty(t_chain **chain)
 {
   if (chain == NULL ||
       (*chain) == NULL ||
