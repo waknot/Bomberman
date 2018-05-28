@@ -11,21 +11,26 @@ int main ()
   SDL_Event	event;
   SDL_Renderer	*renderer;
   SDL_Surface	*sprites_img;
-  SDL_Texture	*texture, *sprite_texture;
+  SDL_Texture	*sprite_texture;
   int		i, j, ibegin, jbegin, error;
   
   const int WINDOW_W = 1024;
   const int WINDOW_H = 768;
+  // in the picture, the size of the square is 16 for a wall block, so i use 48
   const int PIXEL_SIZE = 48;
   
-  //we define where is the first pixel of the texture's image we want to use
+  /*
+  ** we define where is the first pixel of the texture's image we want to use
+  ** and its sizes
+  */
+  
   SDL_Rect wall_src_rect = {71, 175, 16, 16};
   SDL_Rect ground_src_rect = {122, 175, 16, 16};
   SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
   SDL_Rect score_panel_rect = {414, 175, 256, 32};
   SDL_Rect timer_panel_rect = {413, 37, 32, 14};
 
-  
+  // it helps to know where i begin to draw the squares in the for loop
   ibegin = ((WINDOW_W - (15 * PIXEL_SIZE)) / 2 ) / PIXEL_SIZE;
   jbegin = ((WINDOW_H - (13 * PIXEL_SIZE))) / PIXEL_SIZE;
 
@@ -61,29 +66,18 @@ int main ()
     SDL_ShowSimpleMessageBox(0, "img init error", SDL_GetError(), window);
   }
 
-  //we create the image as a texture to insert it in renderer and texture later
+  //we create the image as a texture to insert it in renderer
   sprite_texture = SDL_CreateTextureFromSurface(renderer, sprites_img);
   
  if (!sprite_texture){
     SDL_ShowSimpleMessageBox(0, "texture image init error", SDL_GetError(), window);
-  }
+  } 
 
- //we create a clean texture that we use to work with and set in the renderer
-  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-			      SDL_TEXTUREACCESS_TARGET, WINDOW_W, WINDOW_H);
-  if (!texture){
-    SDL_ShowSimpleMessageBox(0, "texture init error", SDL_GetError(), window);
-  }
-
-  if (SDL_SetRenderTarget(renderer, texture) < 0) {
-    SDL_ShowSimpleMessageBox(0, "setting texture in renderer error",
-			     SDL_GetError(), window);
-  }
-   SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
-   SDL_RenderClear(renderer);
+  SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
+  SDL_RenderClear(renderer);
 
 
-
+  //place all the squares for the map where it needs to be
   for (j = jbegin; j < jbegin + 13; j++) {
     for (i = ibegin; i < ibegin + 15; i++) {
       SDL_Rect dest_rect = {i * PIXEL_SIZE, j * PIXEL_SIZE,
@@ -137,11 +131,11 @@ int main ()
 	quit = 1;
 	break;
       }
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    
     SDL_RenderPresent(renderer);
   }
 
-  SDL_DestroyTexture(texture);
+ 
   SDL_DestroyTexture(sprite_texture);
   SDL_FreeSurface(sprites_img);
   SDL_DestroyRenderer(renderer);
