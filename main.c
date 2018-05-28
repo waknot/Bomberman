@@ -12,10 +12,20 @@ int main ()
   SDL_Renderer	*renderer;
   SDL_Surface	*sprites_img;
   SDL_Texture	*texture, *sprite_texture;
-  int		i;
-  int		j;
+  int		i, j, ibegin, jbegin, error;
+  const int WINDOW_W = 1024;
+  const int WINDOW_H = 768;
   
-  j = 0;
+  //we define where is the first pixel of the texture's image we want to use
+  SDL_Rect wall_src_rect = {71, 175, 16, 16};
+  SDL_Rect ground_src_rect = {122, 175, 16, 16};
+  SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
+
+  
+  ibegin = ((WINDOW_W - (15 * 48)) / 2 ) / 48;
+  jbegin = ((WINDOW_H - (13 * 48))) / 48;
+  printf("azdpoaz : %i", ibegin);
+  error = 0;
 
   //init sdl
   SDL_Init(SDL_INIT_VIDEO);
@@ -26,8 +36,8 @@ int main ()
 			    "Bomberman",
 			    SDL_WINDOWPOS_CENTERED,
 			    SDL_WINDOWPOS_CENTERED,
-			    1024,
-			    768,
+			    WINDOW_W,
+			    WINDOW_H,
 			    SDL_WINDOW_SHOWN
 			    );  
   if (!window) {
@@ -40,6 +50,7 @@ int main ()
   if (!renderer){
     SDL_ShowSimpleMessageBox(0, "renderer init error", SDL_GetError(), window);
   }
+ 
   
   sprites_img = IMG_Load("bombermanSprite.PNG");
   if (!sprites_img){
@@ -55,7 +66,7 @@ int main ()
 
  //we create a clean texture that we use to work with and set in the renderer
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-			      SDL_TEXTUREACCESS_TARGET, 1024, 768);
+			      SDL_TEXTUREACCESS_TARGET, WINDOW_W, WINDOW_H);
   if (!texture){
     SDL_ShowSimpleMessageBox(0, "texture init error", SDL_GetError(), window);
   }
@@ -64,25 +75,36 @@ int main ()
     SDL_ShowSimpleMessageBox(0, "setting texture in renderer error",
 			     SDL_GetError(), window);
   }
+   SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
+   SDL_RenderClear(renderer);
 
-  //we define where is the first pixel of the texture's image we want to use
-  SDL_Rect wall_src_rect = {71, 175, 16, 16};
-  //  SDL_Rect ground_src_rect = {122, 175, 16, 16};
-  // SDL_Rect  ground_showed_rect = {105, 175, 16 , 16);
 
-  //we loop to make the first line of block and the last line
-  for (i = 0; i < 15; i++) { 
-    SDL_Rect dest_rect = {i * 48, j * 48 , 48, 48};
-    if (SDL_RenderCopy(renderer, sprite_texture , &wall_src_rect, &dest_rect) < 0)
-      {
+
+  for (j = jbegin; j < jbegin + 13; j++) {
+    for (i = ibegin; i < ibegin + 15; i++) {
+      SDL_Rect dest_rect = {i * 48, j * 48 , 48, 48};
+      if (j == jbegin || j == jbegin + 12 || i == ibegin || i == ibegin + 14) {
+	error = SDL_RenderCopy(renderer, sprite_texture ,
+			       &wall_src_rect, &dest_rect);
+      } else if (j == jbegin + 1 ||
+		 ( j % 2 != jbegin % 2 && i % 2 == ibegin % 2)) {
+	error = SDL_RenderCopy(renderer, sprite_texture,
+			       &ground_showed_rect, &dest_rect);
+      } else if (i % 2 != ibegin % 2) {
+	error = SDL_RenderCopy(renderer, sprite_texture,
+			       &ground_src_rect, &dest_rect);
+      } else if (i % 2 == ibegin % 2) {
+	error = SDL_RenderCopy(renderer, sprite_texture,
+			       &wall_src_rect, &dest_rect);
+      }
+      if (error < 0) {
 	SDL_ShowSimpleMessageBox(0, "adding texture in renderer error",
 				 SDL_GetError(), window);
+	break;
       }
-    
-    if (i == 14 && j == 0) {
-      i = -1;
-      j = 12;
     }
+    if (error < 0)
+      break;
   }
   
   /* 
