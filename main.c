@@ -15,11 +15,12 @@ int main ()
   int		i, j, ibegin, jbegin, error;
   const int WINDOW_W = 1024;
   const int WINDOW_H = 768;
-  
+  const int PIXEL_SIZE = 55;
   //we define where is the first pixel of the texture's image we want to use
   SDL_Rect wall_src_rect = {71, 175, 16, 16};
   SDL_Rect ground_src_rect = {122, 175, 16, 16};
   SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
+  SDL_Rect score_pannel_rect = {414, 175, 256, 32};
 
   
   ibegin = ((WINDOW_W - (15 * 48)) / 2 ) / 48;
@@ -106,7 +107,9 @@ int main ()
     if (error < 0)
       break;
   }
-  
+
+  SDL_Rect dest_rect = {0, 0 , WINDOW_W , jbegin * 48};
+  SDL_RenderCopy(renderer, sprite_texture, &score_pannel_rect, &dest_rect); 
   /* 
   ** important, use this to apply modification on last textures
   ** placed on the renderer
