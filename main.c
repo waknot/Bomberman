@@ -13,19 +13,22 @@ int main ()
   SDL_Surface	*sprites_img;
   SDL_Texture	*texture, *sprite_texture;
   int		i, j, ibegin, jbegin, error;
+  
   const int WINDOW_W = 1024;
   const int WINDOW_H = 768;
-  const int PIXEL_SIZE = 55;
+  const int PIXEL_SIZE = 48;
+  
   //we define where is the first pixel of the texture's image we want to use
   SDL_Rect wall_src_rect = {71, 175, 16, 16};
   SDL_Rect ground_src_rect = {122, 175, 16, 16};
   SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
-  SDL_Rect score_pannel_rect = {414, 175, 256, 32};
+  SDL_Rect score_panel_rect = {414, 175, 256, 32};
+  SDL_Rect timer_panel_rect = {413, 37, 32, 14};
 
   
-  ibegin = ((WINDOW_W - (15 * 48)) / 2 ) / 48;
-  jbegin = ((WINDOW_H - (13 * 48))) / 48;
-  printf("azdpoaz : %i", ibegin);
+  ibegin = ((WINDOW_W - (15 * PIXEL_SIZE)) / 2 ) / PIXEL_SIZE;
+  jbegin = ((WINDOW_H - (13 * PIXEL_SIZE))) / PIXEL_SIZE;
+
   error = 0;
 
   //init sdl
@@ -83,7 +86,8 @@ int main ()
 
   for (j = jbegin; j < jbegin + 13; j++) {
     for (i = ibegin; i < ibegin + 15; i++) {
-      SDL_Rect dest_rect = {i * 48, j * 48 , 48, 48};
+      SDL_Rect dest_rect = {i * PIXEL_SIZE, j * PIXEL_SIZE,
+			    PIXEL_SIZE, PIXEL_SIZE};
       if (j == jbegin || j == jbegin + 12 || i == ibegin || i == ibegin + 14) {
 	error = SDL_RenderCopy(renderer, sprite_texture ,
 			       &wall_src_rect, &dest_rect);
@@ -108,8 +112,14 @@ int main ()
       break;
   }
 
-  SDL_Rect dest_rect = {0, 0 , WINDOW_W , jbegin * 48};
-  SDL_RenderCopy(renderer, sprite_texture, &score_pannel_rect, &dest_rect); 
+  SDL_Rect dest_rect_score = {0, 0, WINDOW_W , jbegin * PIXEL_SIZE};
+  SDL_RenderCopy(renderer, sprite_texture, &score_panel_rect, &dest_rect_score);
+  SDL_Rect dest_rect_timer = {(WINDOW_W / 2) - ((timer_panel_rect.w / 2) * 5),
+			      (dest_rect_score.h / 2) -
+			      ((timer_panel_rect.h / 2) * 5),
+			      timer_panel_rect.w * 5,
+			      timer_panel_rect.h * 5};
+  SDL_RenderCopy(renderer, sprite_texture, &timer_panel_rect, &dest_rect_timer);
   /* 
   ** important, use this to apply modification on last textures
   ** placed on the renderer
