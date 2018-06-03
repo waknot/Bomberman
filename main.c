@@ -3,40 +3,73 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <pthread.h>
+
+typedef struct s_data
+{
+  SDL_Texture *texture;
+  SDL_Renderer *renderer;
+  SDL_Window   *window;
+} t_data;
+
+  // in the picture, the size of the square is 16 for a wall block, so i use 48
+
+const int WINDOW_W = 1024;
+const int WINDOW_H = 768;
+const int PIXEL_SIZE = 48;
+const int I_BEGIN = ((1024 - (15 * 48)) / 2 ) / 48;
+const int J_BEGIN = (768 - (13 * 48)) / 48;
+
+void *init_window(void * arg);
+void *drawPlayer1(void *arg);
+void *drawMapModel(void *arg);
+void *drawScore(void *arg);
+void *drawTimer(void *arg);
+void *drawAll(void *arg);
 
 int main ()
 {
   int		quit = 0;
-  SDL_Window	*window;
   SDL_Event	event;
+  //  pthread_t	thread;
+  t_data	*data;
+  data = malloc(sizeof(t_data));
+
+  drawAll((void*)data);
+  SDL_SetRenderTarget(data->renderer, NULL);
+  SDL_RenderPresent(data->renderer);
+  SDL_RenderClear(data->renderer);
+  while(!quit) {
+    SDL_WaitEvent(&event);
+
+    switch(event.type)
+      {
+      case SDL_QUIT:
+	quit = 1;
+	break;
+      }
+
+    //SDL_RenderPresent(renderer);
+  }
+
+ 
+  /*SDL_DestroyTexture(sprite_texture);
+  SDL_FreeSurface(sprites_img);
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);*/
+  IMG_Quit();
+  SDL_Quit();
+  return 0;
+}
+
+void *init_window(void * arg) {
+  SDL_Window	*window;
   SDL_Renderer	*renderer;
-  SDL_Surface	*sprites_img;
   SDL_Texture	*sprite_texture;
-  int		i, j, ibegin, jbegin, error;
-  
-  const int WINDOW_W = 1024;
-  const int WINDOW_H = 768;
-  // in the picture, the size of the square is 16 for a wall block, so i use 48
-  const int PIXEL_SIZE = 48;
-  
-  /*
-  ** we define where is the first pixel of the texture's image we want to use
-  ** and its sizes
-  */
-  
-  SDL_Rect wall_src_rect = {71, 175, 16, 16};
-  SDL_Rect ground_src_rect = {122, 175, 16, 16};
-  SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
-  SDL_Rect score_panel_rect = {414, 175, 256, 32};
-  SDL_Rect timer_panel_rect = {413, 37, 32, 14};
+  SDL_Surface	*sprites_img;
 
-  // it helps to know where i begin to draw the squares in the for loop
-  ibegin = ((WINDOW_W - (15 * PIXEL_SIZE)) / 2 ) / PIXEL_SIZE;
-  jbegin = ((WINDOW_H - (13 * PIXEL_SIZE))) / PIXEL_SIZE;
+  t_data *data = (t_data*)arg;
 
-  error = 0;
-
-  //init sdl
   SDL_Init(SDL_INIT_VIDEO);
   IMG_Init(IMG_INIT_PNG);
   
@@ -51,7 +84,7 @@ int main ()
 			    );  
   if (!window) {
     printf("windows not created");
-    return 1;
+    return (NULL);
   }
   
   //where the image will be rendered
@@ -75,72 +108,98 @@ int main ()
 
   SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
   SDL_RenderClear(renderer);
+  data->texture = sprite_texture;
+  data->renderer = renderer;
+  data->window = window;
+    /* 
+  ** important, use this to apply modification on last textures
+  ** placed on the renderer
+  */
+  SDL_SetRenderTarget(data->renderer, NULL);
+  return (NULL);
+}
+
+void *drawAll(void *arg) {
+  init_window(arg);
+  drawMapModel(arg);
+  drawScore(arg);
+  drawTimer(arg);
+  drawPlayer1(arg);
+  return (NULL);
+}
 
 
-  //place all the squares for the map where it needs to be
-  for (j = jbegin; j < jbegin + 13; j++) {
-    for (i = ibegin; i < ibegin + 15; i++) {
+void *drawMapModel(void *arg) {
+  t_data *data = (t_data*)arg;
+  int		i, j, error;
+  SDL_Rect wall_src_rect = {71, 175, 16, 16};
+  SDL_Rect ground_src_rect = {122, 175, 16, 16};
+  SDL_Rect ground_showed_rect = {105, 175, 16 ,16};
+
+  error = 0;
+
+  for (j = J_BEGIN; j < J_BEGIN + 13; j++) {
+    for (i = I_BEGIN; i < I_BEGIN + 15; i++) {
       SDL_Rect dest_rect = {i * PIXEL_SIZE, j * PIXEL_SIZE,
 			    PIXEL_SIZE, PIXEL_SIZE};
-      if (j == jbegin || j == jbegin + 12 || i == ibegin || i == ibegin + 14) {
-	error = SDL_RenderCopy(renderer, sprite_texture ,
+      if (j == J_BEGIN || j == J_BEGIN + 12 ||
+	  i == I_BEGIN || i == I_BEGIN + 14)
+	{
+	error = SDL_RenderCopy(data->renderer, data->texture ,
 			       &wall_src_rect, &dest_rect);
-      } else if (j == jbegin + 1 ||
-		 ( j % 2 != jbegin % 2 && i % 2 == ibegin % 2)) {
-	error = SDL_RenderCopy(renderer, sprite_texture,
+      } else if (j == J_BEGIN + 1 ||
+		 ( j % 2 != J_BEGIN % 2 && i % 2 == I_BEGIN % 2)) {
+	error = SDL_RenderCopy(data->renderer, data->texture,
 			       &ground_showed_rect, &dest_rect);
-      } else if (i % 2 != ibegin % 2) {
-	error = SDL_RenderCopy(renderer, sprite_texture,
+      } else if (i % 2 != I_BEGIN % 2) {
+	error = SDL_RenderCopy(data->renderer, data->texture,
 			       &ground_src_rect, &dest_rect);
-      } else if (i % 2 == ibegin % 2) {
-	error = SDL_RenderCopy(renderer, sprite_texture,
+      } else if (i % 2 == I_BEGIN % 2) {
+	error = SDL_RenderCopy(data->renderer, data->texture,
 			       &wall_src_rect, &dest_rect);
       }
       if (error < 0) {
 	SDL_ShowSimpleMessageBox(0, "adding texture in renderer error",
-				 SDL_GetError(), window);
+				 SDL_GetError(), data->window);
 	break;
       }
     }
     if (error < 0)
       break;
   }
+  if (error < 0)
+    return (NULL);
+    return ((void*)data);
+}
 
-  SDL_Rect dest_rect_score = {0, 0, WINDOW_W , jbegin * PIXEL_SIZE};
-  SDL_RenderCopy(renderer, sprite_texture, &score_panel_rect, &dest_rect_score);
-  SDL_Rect dest_rect_timer = {(WINDOW_W / 2) - ((timer_panel_rect.w / 2) * 5),
+
+void *drawScore(void *arg) {
+  t_data *data = (t_data*) arg;
+  SDL_Rect score_panel_rect = {414, 175, 256, 32};
+  SDL_Rect dest_rect_score = {0, 0, WINDOW_W , J_BEGIN * PIXEL_SIZE};
+  SDL_RenderCopy(data->renderer, data->texture, &score_panel_rect, &dest_rect_score);
+  return (NULL);
+}
+
+void *drawTimer(void *arg) {
+    t_data *data = (t_data*) arg;
+    SDL_Rect timer_panel_rect = {413, 37, 32, 14};
+    SDL_Rect dest_rect_score = {0, 0, WINDOW_W , J_BEGIN * PIXEL_SIZE};
+    SDL_Rect dest_rect_timer = {(WINDOW_W / 2) - ((timer_panel_rect.w / 2) * 5),
 			      (dest_rect_score.h / 2) -
 			      ((timer_panel_rect.h / 2) * 5),
 			      timer_panel_rect.w * 5,
 			      timer_panel_rect.h * 5};
-  SDL_RenderCopy(renderer, sprite_texture, &timer_panel_rect, &dest_rect_timer);
-  /* 
-  ** important, use this to apply modification on last textures
-  ** placed on the renderer
-  */
-  
-  SDL_SetRenderTarget(renderer, NULL);
+    SDL_RenderCopy(data->renderer, data->texture,
+		   &timer_panel_rect, &dest_rect_timer);
+    return (NULL);
+}
 
-  //SDL_RenderPresent(renderer);
-  while(!quit) {
-    SDL_WaitEvent(&event);
-
-    switch(event.type)
-      {
-      case SDL_QUIT:
-	quit = 1;
-	break;
-      }
-    
-    SDL_RenderPresent(renderer);
-  }
-
- 
-  SDL_DestroyTexture(sprite_texture);
-  SDL_FreeSurface(sprites_img);
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  IMG_Quit();
-  SDL_Quit();
-  return 0;
+void *drawPlayer1(void *arg) {
+  t_data *data = (t_data*)arg;
+  SDL_Rect bomberman_white = {70,38,16,24};
+  SDL_Rect dest_rect = {(I_BEGIN + 1) * 48, ((J_BEGIN+1)*48) - 24 ,
+			16 * 3, 24 * 3};
+  SDL_RenderCopy(data->renderer, data->texture, &bomberman_white, &dest_rect);
+  return (NULL);
 }
