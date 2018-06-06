@@ -12,7 +12,9 @@ typedef enum texture_type
     wall,
     ground,
     ground_shadowed,
-    firstPlayer
+    firstPlayer,
+    pannel,
+    timer
   } texture_type;
 
 typedef struct s_map
@@ -41,7 +43,7 @@ const int J_BEGIN = (768 - (13 * 48)) / 48;
 void *init_window(void * arg);
 void *draw_player_1(void *arg);
 void *draw_map_model(void *arg);
-void *draw_score(void *arg);
+void *draw_pannel(void *arg);
 void *draw_timer(void *arg);
 void *draw_all(void *arg);
 void *rebuild_map(void *arg);
@@ -146,7 +148,7 @@ void		*init_window(void * arg) {
 void *draw_all(void *arg)
 {
   draw_map_model(arg);
-  draw_score(arg);
+  draw_pannel(arg);
   draw_timer(arg);
   draw_player_1(arg);
   return (NULL);
@@ -215,7 +217,7 @@ void	*draw_map_model(void *arg)
 }
 
 
-void	*draw_score(void *arg)
+void	*draw_pannel(void *arg)
 {
   int	error;
 
@@ -225,6 +227,8 @@ void	*draw_score(void *arg)
   SDL_Rect dest_rect_score = {0, 0, WINDOW_W , J_BEGIN * PIXEL_SIZE};
   error = SDL_RenderCopy(data->renderer, data->texture,
 			 &score_panel_rect, &dest_rect_score);
+   data->array_map[0][0] = init_t_map(score_panel_rect, dest_rect_score,
+				     pannel);
   if (error < 0)
     SDL_ShowSimpleMessageBox(0, "drawing Score Tab Failed",
 			     SDL_GetError(), data->window);
@@ -246,6 +250,8 @@ void	*draw_timer(void *arg)
 			      timer_panel_rect.h * 5};
   error = SDL_RenderCopy(data->renderer, data->texture,
 			 &timer_panel_rect, &dest_rect_timer);
+  data->array_map[0][1] = init_t_map(timer_panel_rect, dest_rect_timer,
+				     timer);
   if (error < 0)
     SDL_ShowSimpleMessageBox(0, "drawing Timer Failed",
 			     SDL_GetError(), data->window);
@@ -286,13 +292,16 @@ void *rebuild_map(void *arg) {
   t_data *data = (t_data*)arg;
   int i, j;
 
-  for (i = 1; i < 14; i++)
+  for (i = 0; i < 14; i++)
     {
       for (j = 0; j < 15; j++)
 	{
-	  SDL_RenderCopy(data->renderer, data->texture,
-			 &(data->array_map[i][j].src_rect),
-			 &(data->array_map[i][j].dest_rect));
+	  if (data->renderer != NULL)
+	    {
+	      SDL_RenderCopy(data->renderer, data->texture,
+			     &(data->array_map[i][j].src_rect),
+			     &(data->array_map[i][j].dest_rect));
+	    }
 	}
     }
   return (NULL);
