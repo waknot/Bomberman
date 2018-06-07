@@ -12,6 +12,7 @@ void *draw_all(void *arg)
   draw_pannel(arg);
   draw_timer(arg);
   draw_player_1(arg);
+  white_bomber_sprite(arg);
   return (NULL);
 }
 

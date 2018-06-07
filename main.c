@@ -44,7 +44,7 @@ int		main ()
   return 0;
 }
 
-void		*init_window(void * arg) {
+void		*init_window(void *arg) {
   SDL_Window	*window;
   SDL_Renderer	*renderer;
   SDL_Texture	*sprite_texture;
