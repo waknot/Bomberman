@@ -78,16 +78,20 @@ int		add_player(t_srv **srv, int fd)
 int			create_server_socket()
 {
   int			s;
+  struct protoent	*pe;
   struct sockaddr_in	sin;
   int			port;
 
   memset(&sin, 0, sizeof (struct sockaddr_in));
-  if ((s = socket(PF_INET, SOCK_STREAM, 0)) == -1)
+  pe = getprotobyname("TCP");
+  if (pe == NULL)
+    return (-1);
+  if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
     return (-1);
   port = 4022;
   sin.sin_family = AF_INET;
   sin.sin_port = htons(port);
-  sin.sin_addr.s_addr = INADDR_ANY;
+  sin.sin_addr.s_addr = htonl(INADDR_ANY);
   if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) == -1)
     return (-1);
   if (listen(s, 42) == -1)
