@@ -5,7 +5,7 @@
 ** Login   <billau_j@etna-alternance.net>
 ** 
 ** Started on  Tue Jun 26 17:52:39 2018 BILLAUD Jean
-** Last update Tue Jun 26 20:14:36 2018 BILLAUD Jean
+** Last update Wed Jul  4 20:13:05 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -65,11 +65,15 @@ int	client_connect(char *serv_addr)
   memset(&sin, 0, sizeof(struct sockaddr_in));
   port = PORT;
   pe = getprotobyname("TCP");
-  if (pe == NULL)
+  if (pe == NULL) {
+        printf("protocol client error");
     return (-1);
+  }
   s = socket(AF_INET, SOCK_STREAM, pe->p_proto);
-  if (s == -1)
+  if (s == -1) {
+    printf("socket error client");
     return (-1);
+  }
   sin.sin_family = AF_INET;
   sin.sin_port = htons(port);
   sin.sin_addr.s_addr = inet_addr(serv_addr);

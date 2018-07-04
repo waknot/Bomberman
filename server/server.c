@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <netdb.h>
 #include "sdl.h"
 #include "player.h"
 #include "socket.h"
@@ -84,18 +85,26 @@ int			create_server_socket()
 
   memset(&sin, 0, sizeof (struct sockaddr_in));
   pe = getprotobyname("TCP");
-  if (pe == NULL)
+  if (pe == NULL) {
+    printf("protocol server error");
     return (-1);
-  if ((s = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
+  }
+  if ((s = socket(AF_INET, SOCK_STREAM,0)) == -1) {
+    printf("socket error server");
     return (-1);
+  }
   port = 4022;
   sin.sin_family = AF_INET;
   sin.sin_port = htons(port);
   sin.sin_addr.s_addr = htonl(INADDR_ANY);
-  if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) == -1)
+  if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) == -1) {
+    printf("binding error server");
     return (-1);
-  if (listen(s, 42) == -1)
+  }
+  if (listen(s, 42) == -1) {
+    printf("listening error server");
     return (-1);
+  }
   return (s);
 }
 
