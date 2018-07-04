@@ -1,6 +1,10 @@
 #ifndef _BASE_MAP_H_
 #define _BASE_MAP_H_
 
+#include "request.h"
+#include "player.h"
+#include "sdl.h"
+
 typedef enum	texture_type
   {
     bomb = 0,
@@ -71,6 +75,7 @@ t_map init_t_map(SDL_Rect src, SDL_Rect dest, texture_type type);
 //base_map/base_map_manager.c
 void *draw_all(void *arg);
 void *rebuild_map(void *arg);
+void *draw_players(void *arg);
 
 //base_map/draw_base_map.c
 void *draw_map_model(void *arg);

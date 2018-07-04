@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 00:13:56 2018 MASERA Mathieu
-** Last update Wed Jul  4 00:28:14 2018 MASERA Mathieu
+** Last update Wed Jul  4 15:09:16 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -41,7 +41,7 @@ void		main_menu(t_sdl *sdl)
 	x = event_queue.button.x;
 	y = event_queue.button.y;
 
-	if (( x > join_position.x ) && ( x < join_position.x + join_position.w ) && ( y > join_position.y ) && ( y < join_position.y + join_position.h ) ) {
+	if (( x > join_position.x ) && ( x < join_position.x + join_position.w ) && ( y > join_position.y ) && ( y < join_position.y + join_position.h)) {
 	  init_client(sdl);
 	  printf("join button pressed");
 	}

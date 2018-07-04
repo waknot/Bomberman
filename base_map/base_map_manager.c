@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:30:34 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:30:35 2018 MASERA Mathieu
+** Last update Wed Jul  4 19:13:09 2018 MASERA Mathieu
 */
 
 
@@ -19,6 +19,7 @@
 #include "player.h"
 #include "sdl.h"
 #include "base_map.h"
+#include "game_info.h"
 
 void *draw_all(void *arg)
 {
@@ -29,12 +30,40 @@ void *draw_all(void *arg)
   red_bomber_sprite(arg);
   black_bomber_sprite(arg);
   blue_bomber_sprite(arg);
+  draw_players(arg);
+  return (NULL);
+}
 
-  draw_player_1(arg);
-  draw_player_2(arg);
-  draw_player_3(arg);
-  draw_player_4(arg);
+void *draw_players(void *arg) {
+  t_game_info *game_info;
+  t_data *data = (t_data*)arg;
 
+  game_info = malloc(sizeof(t_game_info));
+  game_info = get_game_info();
+  SDL_RenderClear(data->renderer);
+  rebuild_map((void *)data);
+  printf("yatota");
+  if (game_info->game_status == 0 && game_info->players != NULL) {
+    printf("hahahahh");
+    if (game_info->players != NULL && game_info->players[0] != NULL) {
+      draw_player_1(arg);
+      printf("hohohohoho");
+    }
+    if (game_info->players != NULL && game_info->players[1] != NULL) {
+      draw_player_2(arg);
+      printf("huhuhuhuu");
+    }
+    if (game_info->players != NULL && game_info->players[2] != NULL) {
+      draw_player_3(arg);
+            printf("hehehehehe");
+    }
+    if (game_info->players != NULL && game_info->players[3] != NULL) {
+      draw_player_4(arg);
+                  printf("opapapap");
+    }
+   SDL_RenderPresent(data->renderer);
+   SDL_SetRenderTarget(data->renderer, NULL);
+  }
   return (NULL);
 }
 

@@ -9,13 +9,13 @@
 
 typedef struct 	s_map_destroyable
 {
-	int	y_pos;                  /* La position y de l'element */
-	int	x_pos;                  /* La position x de l'element */
-	int	bomb;
-	int	bomb_owner;
-	int     dying;
-	int	start_explode;
-	int	wall_destroyable;
+  int	y_pos;                  /* La position y de l'element */
+  int	x_pos;                  /* La position x de l'element */
+  int	bomb;
+  int	bomb_owner;
+  int   dying;
+  int	start_explode;
+  int	wall_destroyable;
 }		t_map_destroyable;
 
 typedef struct		s_game_info
