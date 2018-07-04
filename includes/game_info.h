@@ -5,7 +5,7 @@
 ** Login   <hochar_n@etna-alternance.net>
 **
 ** Started on  Thu Jul  5 21:40:22 2018 hochar_n
-** Last update Tue Feb  5 13:02:56 2019 MASERA Mathieu
+** Last update Tue Feb  5 13:07:00 2019 MASERA Mathieu
 */
 
 #ifndef _GAME_INFO_H_
