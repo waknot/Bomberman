@@ -5,7 +5,7 @@
 ** Login   <billau_j@etna-alternance.net>
 **
 ** Started on  Tue Jun 26 17:26:19 2018 BILLAUD Jean
-** Last update Tue Jul  3 22:29:46 2018 hochar_n
+** Last update Thu Jul  5 14:42:33 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include "socket.h"
 #include "server.h"
+#include "request.h"
+#include "base_map.h"
 #include "thread.h"
 #include "game_info.h"
 #include "my_put.h"

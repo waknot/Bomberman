@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:30:11 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:30:12 2018 MASERA Mathieu
+** Last update Thu Jul  5 14:15:24 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -30,17 +30,21 @@ int start_map(t_sdl *sdl, int socket, t_player_request *cr)
   SDL_Event event;
   t_data *data;
   pthread_t listen_server;
+  t_thread_cl *thread_cl_struct;
 
   quit = 0;
-  data = malloc(sizeof(*data));
+  thread_cl_struct = malloc(sizeof(t_thread_cl));
+  data = malloc(sizeof(t_data));
   data->renderer = sdl->renderer;
   data->window = sdl->window;
   init_sprites_sheet((void *)data);
   draw_all((void *)data);
+  thread_cl_struct->data = data;
+  thread_cl_struct->socket = socket;
   SDL_SetRenderTarget(data->renderer, NULL);
   SDL_RenderPresent(data->renderer);
   SDL_RenderClear(data->renderer);
-  if (pthread_create(&listen_server, NULL, thread_listen_serv, &socket))
+  if (pthread_create(&listen_server, NULL, thread_listen_serv, (void*)thread_cl_struct))
   {
     quit = 1;
   }

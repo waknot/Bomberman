@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 00:14:25 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:28:54 2018 MASERA Mathieu
+** Last update Thu Jul  5 14:38:46 2018 MASERA Mathieu
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,6 +13,8 @@
 #include "sdl.h"
 #include "player.h"
 #include "socket.h"
+#include "request.h"
+#include "base_map.h"
 #include "thread.h"
 #include "request.h"
 #include "game_info.h"

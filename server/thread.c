@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:39:24 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:39:25 2018 MASERA Mathieu
+** Last update Thu Jul  5 15:18:19 2018 MASERA Mathieu
 */
 
 #include <stdio.h>
@@ -21,6 +21,7 @@
 #include "game_info.h"
 #include "game_info_serialization.h"
 #include "main_loop.h"
+#include "base_map.h"
 #include "thread.h"
 
 // 1 sec = 1 nano * 10^9 (1 000 000 000)  
@@ -50,7 +51,7 @@ void		*threaded_ticker(void *server)
   my_putstr("\nthreaded tick begin!\n");
   while(1)
     {
-      sprintf(log, "\nTick: %d", (*tk));
+      sprintf(log, "\nTick: %d\n", (*tk));
       my_putstr(log);
       sprintf(log, "\n number of clients: %d\n", (*srv)->n_players);
       my_putstr(log);

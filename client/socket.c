@@ -5,7 +5,7 @@
 ** Login   <billau_j@etna-alternance.net>
 ** 
 ** Started on  Tue Jun 26 17:52:39 2018 BILLAUD Jean
-** Last update Tue Jul  3 23:42:48 2018 MASERA Mathieu
+** Last update Thu Jul  5 14:28:05 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -24,6 +24,7 @@
 #include "client.h"
 #include "player_info.h"
 #include "server.h"
+#include "base_map.h"
 #include "thread.h"
 #include <errno.h>
 

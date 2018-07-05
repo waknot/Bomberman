@@ -1,6 +1,8 @@
 #ifndef _BASE_MAP_H_
 #define _BASE_MAP_H_
 
+#include "sdl.h"
+
 typedef enum	texture_type
   {
     bomb = 0,
