@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:30:34 2018 MASERA Mathieu
-** Last update Wed Jul  4 19:13:09 2018 MASERA Mathieu
+** Last update Thu Jul  5 12:29:36 2018 MASERA Mathieu
 */
 
 
@@ -41,25 +41,25 @@ void *draw_players(void *arg) {
   game_info = malloc(sizeof(t_game_info));
   game_info = get_game_info();
   SDL_RenderClear(data->renderer);
-  rebuild_map((void *)data);
+  rebuild_map(arg);
   printf("yatota");
   if (game_info->game_status == 0 && game_info->players != NULL) {
     printf("hahahahh");
-    if (game_info->players != NULL && game_info->players[0] != NULL) {
+    if (game_info->players[0].connected != 0) {
       draw_player_1(arg);
       printf("hohohohoho");
     }
-    if (game_info->players != NULL && game_info->players[1] != NULL) {
+    if (game_info->players[1].connected != 0) {
       draw_player_2(arg);
       printf("huhuhuhuu");
     }
-    if (game_info->players != NULL && game_info->players[2] != NULL) {
+      if (game_info->players[2].connected != 0) {
       draw_player_3(arg);
-            printf("hehehehehe");
+      printf("hehehehehe");
     }
-    if (game_info->players != NULL && game_info->players[3] != NULL) {
+    if (game_info->players[3].connected != 0) {
       draw_player_4(arg);
-                  printf("opapapap");
+      printf("opapapap");
     }
    SDL_RenderPresent(data->renderer);
    SDL_SetRenderTarget(data->renderer, NULL);
