@@ -5,8 +5,9 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 00:13:33 2018 MASERA Mathieu
-** Last update Thu Jul  5 17:10:39 2018 MASERA Mathieu
+** Last update Thu Jul  5 19:57:12 2018 MASERA Mathieu
 */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
@@ -38,29 +39,31 @@ void		*thread_listen_serv(void *struct_listener_c)
       
       if (FD_ISSET(socket, &fd_read))
         {
-	  printf("tata\n");
 	  if (get_message(socket) == 0)
             {
 	      quit = 1;
             }
 	  game_info = get_game_info();
-	  game_info = game_info;
 	  printf("checksum %d\n", game_info->checksum);
 	  printf("tick_time %d\n", game_info->tick_time);
 	  printf("game_status %d\n", game_info->game_status);
 	  printf("id_client %d\n", game_info->id_client);
-	  
+	  printf("file descriptor %d\n", game_info->players[0].fd);
+	  printf("nb_client %d\n", game_info->nb_client);
+	  printf("connected %d\n", game_info->players[0].connected);
+
 	  for (iterator = 0; iterator < 4; iterator++)
 	    {
 	      
 	      if (game_info->players[iterator].connected != 0)
+
 		{
 		  printf("Im player: %d \n", game_info->id_client);
-		  //             printf("waaaaaaaaaaa %d num_player \n", game_info->players[0]->num_player);
+		  //printf("waaaaaaaaaaa %d num_player \n", game_info->players[0]->num_player);
 		}
 	    }
 	   if (game_info->game_status == 0 && game_info->players != NULL) {
-	     //draw_players((void*)(thread_cl->data));
+	     draw_players((void*)(thread_cl->data));
 	    }
         }
     }

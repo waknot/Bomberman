@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:30:11 2018 MASERA Mathieu
-** Last update Thu Jul  5 14:15:24 2018 MASERA Mathieu
+** Last update Thu Jul  5 19:11:48 2018 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -26,11 +26,12 @@
 
 int start_map(t_sdl *sdl, int socket, t_player_request *cr)
 {
-  int quit;
-  SDL_Event event;
-  t_data *data;
-  pthread_t listen_server;
-  t_thread_cl *thread_cl_struct;
+  int		quit;
+  SDL_Event	event;
+  t_data	*data;
+  pthread_t	listen_server;
+  t_thread_cl	*thread_cl_struct;
+  t_game_info	*game_info;
 
   quit = 0;
   thread_cl_struct = malloc(sizeof(t_thread_cl));
@@ -44,62 +45,67 @@ int start_map(t_sdl *sdl, int socket, t_player_request *cr)
   SDL_SetRenderTarget(data->renderer, NULL);
   SDL_RenderPresent(data->renderer);
   SDL_RenderClear(data->renderer);
+    printf("\nbefore create thread\n");
   if (pthread_create(&listen_server, NULL, thread_listen_serv, (void*)thread_cl_struct))
   {
     quit = 1;
   }
+  printf("\nthread created\n");
   while (!quit)
-  {
-
-    while (SDL_PollEvent(&event))
     {
-      switch (event.type)
-      {
-      case SDL_QUIT:
-        quit = 1;
-        break;
-      case SDL_KEYUP:
-      {
-        SDL_RenderClear(data->renderer);
-        rebuild_map((void *)data);
-        move_player_stop((void *)data);
-        SDL_RenderPresent(data->renderer);
-        SDL_SetRenderTarget(data->renderer, NULL);
-        break;
-      }
-      case SDL_KEYDOWN:
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_UP:
-          SDL_RenderClear(data->renderer);
-          rebuild_map((void *)data);
-          move_player_up((void *)data);
-          send_request(socket, cr);
-          break;
-        case SDLK_LEFT:
-          SDL_RenderClear(data->renderer);
-          rebuild_map((void *)data);
-          move_player_left((void *)data);
-          send_request(socket, cr);
-          break;
-        case SDLK_RIGHT:
-          SDL_RenderClear(data->renderer);
-          rebuild_map((void *)data);
-          move_player_right((void *)data);
-          send_request(socket, cr);
-          break;
-        case SDLK_DOWN:
-          SDL_RenderClear(data->renderer);
-          rebuild_map((void *)data);
-          move_player_down((void *)data);
-          send_request(socket, cr);
-          break;
-        }
-        SDL_RenderPresent(data->renderer);
-        SDL_SetRenderTarget(data->renderer, NULL);
-      }
+      game_info = get_game_info();
+      if (game_info != NULL && (game_info->players[4].fd != 0 || game_info->game_status > 0))
+	{
+	  while (SDL_PollEvent(&event))
+	    {
+	      switch (event.type)
+		{
+		case SDL_QUIT:
+		  quit = 1;
+		  break;
+		case SDL_KEYUP:
+		  {
+		    SDL_RenderClear(data->renderer);
+		    rebuild_map((void *)data);
+		    move_player_stop((void *)data);
+		    SDL_RenderPresent(data->renderer);
+		    SDL_SetRenderTarget(data->renderer, NULL);
+		    break;
+		  }
+		case SDL_KEYDOWN:
+		  switch (event.key.keysym.sym)
+		    {
+		    case SDLK_UP:
+		      SDL_RenderClear(data->renderer);
+		      rebuild_map((void *)data);
+		      move_player_up((void *)data);
+		      send_request(socket, cr);
+		      break;
+		    case SDLK_LEFT:
+		      SDL_RenderClear(data->renderer);
+		      rebuild_map((void *)data);
+		      move_player_left((void *)data);
+		      send_request(socket, cr);
+		      break;
+		    case SDLK_RIGHT:
+		      SDL_RenderClear(data->renderer);
+		      rebuild_map((void *)data);
+		      move_player_right((void *)data);
+		      send_request(socket, cr);
+		      break;
+		    case SDLK_DOWN:
+		      SDL_RenderClear(data->renderer);
+		      rebuild_map((void *)data);
+		      move_player_down((void *)data);
+		      send_request(socket, cr);
+		      break;
+		    }
+		  SDL_RenderPresent(data->renderer);
+		  SDL_SetRenderTarget(data->renderer, NULL);
+		}
+	    }
+	}
     }
-  }
   pthread_cancel(listen_server);
   SDL_DestroyTexture(data->texture);
   free(data);
@@ -143,62 +149,3 @@ void *init_sprites_sheet(void *arg)
   SDL_SetRenderTarget(data->renderer, NULL);
   return (NULL);
 }
-
-/*
-void function_test(t_game_info game_info, t_base_map base_map) {
-  int i;
-  int convert_x;
-  int convert_y;
-
-  for (i = 0; i < 4; i++) {
-    if (game_info->players[i].alive) {
-      convert_x = walk_X_into_pixels(game_info->players[i].x_pos);
-      convert_y = walk_Y_into_pixels(game_info->players[i].y_pos);
-      if (convert_x == base_map->players[i].x && convert_y == base_map->players[i].y) {
-	continue;
-      } else if (convert_x != base_map->players[i].x) {
-	if (game_info->players[i].current_dir == bomb_d) {
-	  move_player_down(base_map,i);
-	} else {
-	  move_player_up(base_map,i);
-	}
-      } else if (convert_y != base_map->players[i].y) {
-	if (game_info->players[i].current_dir == bomb_l) {
-	  move_player_left(base_map, i);
-	} else {
-	  move_player_right(base_map, i);
-	}
-      }
-
-    } else if (game_info->players[i].dying) {
-      //what to do here ? anim the dying mother fucker
-    }
-  }
-}
-
-void	update_destroyable_stuffs(t_game_info game_info){
-  int	i;
-  int	j;
-
-  for (i = 0; i < 14; i++) {
-    for (j = 0; i < 15; i++) {
-      if (game_info->map_destroyable[i][j].wall_destroyable) {
-	draw_destroyable_wall(game_info);
-      }
-      }
-    }
-  }
-}
-
-int walk_Y_into_pixels(int value) {
-  int first_step_X =  (I_BEGIN + 1) * 48;
-  value *= first_step_X;
-  return (value);
-}
-
-int walk_X_into_pixels(int value) {
-  int first_step_Y = ((J_BEGIN + 1) * 48) - 36;
-  value *= first_step_Y;
-  return (value);
-}
-*/

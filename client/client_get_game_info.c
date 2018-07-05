@@ -5,13 +5,14 @@
 ** Login   <billau_j@etna-alternance.net>
 **
 ** Started on  Mon Jul  2 16:17:01 2018 BILLAUD Jean
-** Last update Wed Jul  4 10:16:22 2018 MASERA Mathieu
+** Last update Thu Jul  5 18:59:02 2018 MASERA Mathieu
 */
 
 #include "sdl.h"
 #include "client.h"
 #include "game_info.h"
 #include "game_info_serialization.h"
+#include "my_put.h"
 
 int get_message(int s)
 {
@@ -20,7 +21,7 @@ int get_message(int s)
   t_game_info *game_info;
 
   game_info = NULL;
-  r = recv(s, buff, sizeof(t_game_info), 0);
+  r = recv(s, buff, sizeof(t_game_info) - 1 , 0);
   if (r > 0)
   {
     printf("%d", r);
@@ -32,6 +33,7 @@ int get_message(int s)
 //    if (game_info->players[0] != NULL){
 //      printf("x_pos first_player %d x_pos \n", game_info->players[0]->x_pos);
 //    }
+  
     return 1;
   }
   else

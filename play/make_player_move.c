@@ -7,7 +7,6 @@
 ** Started on  Tue Jul  3 23:52:36 2018 MASERA Mathieu
 */
 
-
 void function_test(t_game_info game_info, t_base_map base_map) {
   int i;
   int convert_x;
@@ -39,6 +38,7 @@ void function_test(t_game_info game_info, t_base_map base_map) {
   }
 }
 
+
 void	update_destroyable_stuffs(t_game_info game_info){
   int	i;
   int	j;
@@ -48,10 +48,11 @@ void	update_destroyable_stuffs(t_game_info game_info){
       if (game_info->map_destroyable[i][j].wall_destroyable) {
 	draw_destroyable_wall(game_info);
       }
-      }
     }
   }
 }
+
+
 
 int walk_Y_into_pixels(int value) {
   int first_step_X =  (I_BEGIN + 1) * 48;

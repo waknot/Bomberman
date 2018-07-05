@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 ** 
 ** Started on  Wed Jul  4 09:37:32 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:37:33 2018 MASERA Mathieu
+** Last update Thu Jul  5 18:55:56 2018 MASERA Mathieu
 */
 
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include "request.h"
 #include "game_info.h"
 #include "main_loop.h"
+#include "my_put.h"
 
 int			main_loop(t_srv **srv)
 {
@@ -22,7 +23,7 @@ int			main_loop(t_srv **srv)
   socklen_t		len;
   int			retval;
   t_player_request	*player_request;
-  
+
   i = 0;
   FD_ZERO(&(*srv)->fd_read);
   (*srv)->fd_max = (*srv)->fd;
@@ -61,6 +62,7 @@ int			main_loop(t_srv **srv)
 		  player_request = request_deserialize(buffer);
             add_request_to_server(srv, player_request);
 		  printf("%s", request_serialization(player_request));
+      my_putstr("GET REQUEST DUMB DUMB\n\n\n\n\n");
 		  if (player_request->checksum != get_request_checksum(player_request))
 		    {
 		      close((*srv)->players[i].fd);
