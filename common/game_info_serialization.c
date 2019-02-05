@@ -5,21 +5,19 @@
 ** Login   <masera_m@etna-alternance.net>
 **
 ** Started on  Wed Jul  4 09:33:54 2018 MASERA Mathieu
-** Last update Tue Feb  5 13:08:43 2019 MASERA Mathieu
+** Last update Tue Feb  5 13:49:08 2019 MASERA Mathieu
 */
 
-#include "enum.h"
-#include "sdl.h"
-#include "player_info.h"
-#include "client_request.h"
-#include "server.h"
+#include "player.h"
+#include "request.h"
 #include "my_put.h"
-#include "map.h"
+#include "sdl.h"
 #include "game_info.h"
 #include "game_info_serialization.h"
 
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 char		*serialize_game_info()
@@ -38,6 +36,7 @@ char		*serialize_game_info()
   memcpy(game_info_str + sizeof(int) * 3, &game_info->id_client, sizeof(int));
 
   for(i=0; i < 4 ; i ++) {
+    game_info->players[i].bomb_left = i;
     printf("server side bomb %d\n\n", game_info->players[i].bomb_left);
     if (i == 0)
       memcpy(game_info_str + (sizeof(int) * 4), &game_info->players[i], sizeof(t_player_info));
