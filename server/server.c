@@ -5,7 +5,7 @@
 ** Login   <masera_m@etna-alternance.net>
 **
 ** Started on  Wed Jul  4 00:14:25 2018 MASERA Mathieu
-** Last update Wed Jul  4 09:28:54 2018 MASERA Mathieu
+** Last update Tue Feb  5 13:53:02 2019 MASERA Mathieu
 */
 
 #include <stdlib.h>
@@ -122,37 +122,3 @@ void    set_fd_max(t_srv **srv)
         }
     }
 }
-
-/**
- *
- *Not used
-**/
-// void		process_requests(t_srv **server)
-// {
-//   int		i;
-//   t_game_info	*game_info;
-
-//   game_info = get_game_info();
-//   for (i = 0; i < 8; ++i)
-//   {
-//     if ((*server)->requests[i] == NULL)
-//       continue;
-//     if ((*server)->requests[i]->command == START_GAME)
-//     {
-//       if ((*server)->n_players >= 2 && (*server)->n_players <= 4)
-//       {
-//         create_game_info(server);
-//         my_putstr("\n creation of game requested");
-//       }
-//     }
-//     else if (game_info->game_status == 0)
-//     {
-//       free((*server)->requests[i]);
-//       (*server)->requests[i] = NULL;
-//       continue;
-//     }
-//     handle_requests(game_info, (*server)->requests[i]);
-//     free((*server)->requests[i]);
-//     (*server)->requests[i] = NULL;
-//   }
-// }
